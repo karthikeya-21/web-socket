@@ -11,7 +11,7 @@ app.get("/",(req,res)=>{
 });
 
 // Create a Websocket server
-const wss = new WebSocket.Server({ port: 8000 });
+const wss = new WebSocket.Server({ port: 8080 });
 
 // Set up event listeners for server interactions
 wss.on('connection', (ws) => {
