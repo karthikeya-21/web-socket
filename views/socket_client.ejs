@@ -9,7 +9,7 @@
   <div id="output"></div>
 
   <script>
-    const socket = new WebSocket('ws://localhost:8080');
+    const socket = new WebSocket('wss://web-socket-demo-edgz.onrender.com/:8080');
 
     socket.addEventListener('open', (event) => {
       console.log('Connected to server');
