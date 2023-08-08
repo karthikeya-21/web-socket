@@ -1,4 +1,14 @@
+const express=require("express");
+const app=express();
+
+app.set("view engine","ejs");
+
 const WebSocket = require('ws');
+
+
+app.get("/",(req,res)=>{
+  res.render("socket_client");
+});
 
 // Create a Websocket server
 const wss = new WebSocket.Server({ port: 8080 });
@@ -24,4 +34,8 @@ wss.on('connection', (ws) => {
   });
 });
 
-console.log('Websocket server running on port 8080');
+const port=8000;
+
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+});
