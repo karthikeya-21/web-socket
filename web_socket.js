@@ -20,10 +20,13 @@ wss.on('connection', (ws) => {
   // Listen for messages from clients
   ws.on('message', (message) => {
     // Broadcast the message to all clients
+    const parsedMessage = JSON.parse(message);
+    const senderName = parsedMessage.name;
+    const senderMsg = parsedMessage.msg;
     wss.clients.forEach(client => {
         // console.log(client);
       if (client.readyState === WebSocket.OPEN) {
-        client.send(`User said: ${message}`);
+        client.send(`${senderName} said: ${senderMsg}`);
       }
     });
   });
