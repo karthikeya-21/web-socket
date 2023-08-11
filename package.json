@@ -1,7 +1,7 @@
 {
   "name": "chat-app",
   "version": "1.0.0",
-  "description": "",
+  "description": "This is trail repo for hosting purpose while learning websockets in nodejs",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -11,6 +11,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "http": "^0.0.1-security",
     "nodemon": "^3.0.1",
     "socket.io": "^4.7.2",
     "ws": "^8.13.0"
