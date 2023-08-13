@@ -1,52 +1,35 @@
-const express=require("express")
-const app=express()
-const http=require('http')
-const path=require("path");
-const PORT=process.env.PORT || 4000
-const WebSocket = require('ws');
-const cors = require('cors');
-app.use(cors());
-const server = http.createServer(app); // Create an HTTP server using Express app
-const io = new WebSocket.Server({ port:4050 });
+const express=require('express')
+var app = express();
+const path=require('path')
+var http = require( 'http' ).createServer( app );
+var io = require( 'socket.io' )( http );
 
+const PORT = process.env.PORT || 3050;
 
-app.listen(PORT,()=>console.log(`Server Running on port ${PORT}`))
-
+// app.get( '/', function( req, res ) {
+// res.sendFile( __dirname + '/public/index.html' );
+// });
 app.use(express.static(path.join(__dirname,'public')))
 
-io.on('connection',(ws)=>{
-    console.log("Connected")
-    io.clients.forEach(client => {
-        if (client.readyState === WebSocket.OPEN) {
-            var data={
-                type:"count",
-                count:io.clients.size.toString()
-            }
-          client.send(JSON.stringify(data));
-        }
-      });
+http.listen( PORT, function() {
+console.log( 'listening on *:' + PORT );
+});
 
-    ws.on('message',(message)=>{
-        var data=JSON.parse(message)
-        // console.log(data)
-            io.clients.forEach(client => {
-                if (client!=ws && client.readyState === WebSocket.OPEN) {
-                  client.send(JSON.stringify(data));
-                }
-              });
-    })
+io.on( 'connection', function( socket ) {
+console.log( 'a user has connected!' );
+// console.log(io.sockets.sockets.size);
+io.emit('totalclients',io.sockets.sockets.size)
 
-    ws.on('close',(ws)=>{
-    console.log("Dis-Connected")
-    io.clients.forEach(client => {
-        if (client.readyState === WebSocket.OPEN) {
-            var data={
-                type:"count",
-                count:io.clients.size.toString()
-            }
-          client.send(JSON.stringify(data));
-        }
-      });
-})
 
-})
+socket.on( 'disconnect', function() {
+console.log( 'user disconnected' );
+// console.log(io.sockets.sockets.size);
+io.emit('totalclients',io.sockets.sockets.size)
+});
+
+socket.on('send_message',(data)=>{
+  socket.broadcast.emit('message',data);
+});
+
+});
+

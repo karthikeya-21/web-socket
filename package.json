@@ -16,6 +16,7 @@
     "http": "^0.0.1-security",
     "nodemon": "^3.0.1",
     "socket.io": "^4.7.2",
+    "socket.io-client": "^4.7.2",
     "ws": "^8.13.0"
   }
 }

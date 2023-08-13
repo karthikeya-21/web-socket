@@ -1,4 +1,4 @@
-const socket = new WebSocket("ws://localhost:4050");
+var socket = io();
 const clientsTotal = document.getElementById('client-total')
 
 const messageContainer = document.getElementById('message-container')
@@ -6,21 +6,18 @@ const nameInput = document.getElementById('name-input')
 const messageForm = document.getElementById('message-form')
 const messageInput = document.getElementById('message-input')
 
-socket.addEventListener('open',(event)=>{
-    console.log("connected")
+socket.on('connection', () => {
+  console.log('Connected to server');
 });
 
-socket.addEventListener('message',(event)=>{
-    var data=JSON.parse(event.data)
-    if(data.type=="count"){
-        clientsTotal.innerText=`Total-Clients : ${data.count}`
-        console.log(data.count)
-    }else if(data.type="sendmessage"){
-        addMessageToUI(false, data)
-        console.log("message-received",data)
-    }
-});
 
+socket.on('totalclients',(data)=>{
+  clientsTotal.innerText=`Total-Clients : ${data}`;
+})
+
+socket.on('message', (data) => {
+  addMessageToUI(false, data);
+});
 
 messageForm.addEventListener('submit', (e) => {
     e.preventDefault()
@@ -28,17 +25,21 @@ messageForm.addEventListener('submit', (e) => {
   })
 
   function sendMessage() {
-    if (messageInput.value === '') return
-    // console.log(messageInput.value)
+    const name = nameInput.value; // Replace with appropriate source for the name
+    const message = messageInput.value;
+    const dateTime = new Date();
+
+    if (message === '') return;
+
     const data = {
-        type:"sendmessage",
-      name: nameInput.value,
-      message: messageInput.value,
-      dateTime: new Date(),
-    }
-    messageInput.value = ''
-    socket.send(JSON.stringify(data))
-    addMessageToUI(true, data)
+      type: 'sendmessage',
+      name: name,
+      message: message,
+      dateTime: dateTime.toISOString(),
+    };
+    socket.emit('send_message', data);
+    addMessageToUI(true, data);
+    messageInput.value = '';
   }
 
   function addMessageToUI(isOwnMessage, data) {
@@ -51,7 +52,6 @@ messageForm.addEventListener('submit', (e) => {
             </p>
           </li>
           `
-  
     messageContainer.innerHTML += element
     scrollToBottom()
   }
